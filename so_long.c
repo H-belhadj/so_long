@@ -123,5 +123,37 @@ int main(int argc, char **argv)
         return (1);
     }
     printf("YOUR MAP IS GOOD\n");
+    void    *win;
+    int high = 50;
+    int  width = 50;
+    void    *mlx = mlx_init();
+    printf("%d\n", cnt);
+    printf("%d\n", ft_strlen(stored[0]));
+    win = mlx_new_window(mlx, ft_strlen(stored[0]) * 250,cnt * 250, "tangawi");
+    void    *wll = mlx_xpm_file_to_image(mlx, "textures/wall.xpm", &high, &width);
+    void    *door = mlx_xpm_file_to_image(mlx, "textures/door.xpm", &high, &width);
+    void    *player = mlx_xpm_file_to_image(mlx, "textures/player.xpm", &high, &width);
+    void    *coins = mlx_xpm_file_to_image(mlx, "textures/coin.xpm", &high, &width);
+
+
+    i= 0;
+    while(stored[i])
+    {
+        j = 0;
+        while(stored[i][j])
+        {
+            if(stored[i][j] == '1')
+                mlx_put_image_to_window(mlx, win, wll, j * 250 ,i * 250 );
+            if(stored[i][j] == 'C')
+                mlx_put_image_to_window(mlx, win, coins,j * 250 ,i * 250);
+            if(stored[i][j] == 'E')
+                mlx_put_image_to_window(mlx, win, door, j * 250 ,i * 250);
+            if(stored[i][j] == 'P')
+                mlx_put_image_to_window(mlx, win, player, j * 250 ,i * 250);
+            j++;
+        }
+        i++;
+    }
+    mlx_loop(mlx);
     free(stored);
 }
