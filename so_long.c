@@ -1,128 +1,89 @@
 #include "so_long.h"
 
-typedef struct  s_list{
-    int position[2];  // Player position [X, Y]
-    char **map;  // Map data
-    int moves; // how many times the player moved
-    void    *wll;
-    void    *backgound;
-    void    *door; 
-    void    *player;
-    void    *coins;
-    void *win;
-    void *mlx;
-    int coin_count; // Number of coins remaining
-} t_list;
 
+int close_win(t_list *so_long)
+{
+    mlx_destroy_window(so_long->mlx, so_long->win);
+        exit(0);
+}
 
 int update(t_list *so_long)
 {
     int i;
     int j;
 
-    i = 0;
-    while (so_long->map[i]) {
-        j = 0;
-        while (so_long->map[i][j]) {
+    i = -1;
+    while (so_long->map[++i]) 
+    {
+        j = -1;
+        while (so_long->map[i][++j]) 
+        {
             if (so_long->map[i][j] == '0')
-                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->backgound, j * 250, i * 250);
+                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->backgound, j * 50, i * 50);
             if (so_long->map[i][j] == '1')
-                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->wll, j * 250, i * 250);
+                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->wll, j * 50, i * 50);
             if (so_long->map[i][j] == 'C')
-                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->coins, j * 250, i * 250);
+                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->coins, j * 50, i * 50);
             if (so_long->map[i][j] == 'E')
             {
-                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->backgound, j * 250, i * 250);
-                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->door, j * 250, i * 250);
-
+                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->backgound, j * 50, i * 50);
+                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->door, j * 50, i * 50);
             }
             if (so_long->map[i][j] == 'P')
-                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->backgound, j * 250, i * 250);
-            j++;
+                mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->backgound, j * 50, i * 50);
         }
-        i++;
+        mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->player, so_long->position[X] , so_long->position[Y] );
     }
-    mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->player, so_long->position[X] , so_long->position[Y] );
-
-    printf("movement: %d\n", so_long->moves);
-    if ( so_long->coin_count == 0 && so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] == 'E') {
-
-        exit(0);
-    }
-    return 0;
+    return (0);
 }
+
 int hook(int keycode, t_list *so_long)
 {
     if (keycode == 53)
         exit(0);
-    if (keycode == 124) // Right arrow key
+    if (keycode == 124)
     {
-        // Check if the player is moving to a valid position
-        if (so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250 + 1] != '1') {
-            // if (so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250 + 1] != 'E')
-            //     so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] = '0';
-
-            so_long->position[X] += 250;
-
-            // so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] = 'P';
-
+        if (so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50 + 1] != '1') 
+        {
+            so_long->position[X] += 50;
             so_long->moves++;
         }
     }
-    if (keycode == 123) // Left arrow key
+    if (keycode == 123)
     {
-        // Check if the player is moving to a valid position
-        if (so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250 - 1] != '1') {
-
-            // if (so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250 + 1] != 'E')
-            //     so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] = '0';
-
-            so_long->position[X] -= 250;
-
-            // so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] = 'P';
-
+        if (so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50 - 1] != '1') 
+        {
+            so_long->position[X] -= 50;
             so_long->moves++;
         }
     }
-    if (keycode == 125) // Down arrow key
+    if (keycode == 125)
     {
-        // Check if the player is moving to a valid position
-        if (so_long->map[so_long->position[Y] / 250 + 1][so_long->position[X] / 250] != '1') {
+        if (so_long->map[so_long->position[Y] / 50 + 1][so_long->position[X] / 50] != '1')
+         {
 
-            // if (so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250 + 1] != 'E')
-            //     so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] = '0';
-
-            so_long->position[Y] += 250;
-
-            // so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] = 'P';
-
+            so_long->position[Y] += 50;
             so_long->moves++;
         }
     }
-    if (keycode == 126) // Up arrow key
+    if (keycode == 126)
     {
-        // Check if the player is moving to a valid position
-        if (so_long->map[so_long->position[Y] / 250 - 1][so_long->position[X] / 250] != '1') {
-
-            // if (so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250 + 1] != 'E')
-            //     so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] = '0';
-
-            so_long->position[Y] -= 250;
-
-            // so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] = 'P';
-
+        if (so_long->map[so_long->position[Y] / 50 - 1][so_long->position[X] / 50] != '1') 
+        {
+            so_long->position[Y] -= 50;
             so_long->moves++;
         }
     }
 
-    // Check if the player collected a coin
-    if (so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] == 'C') {
-        so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] = '0';
+    if (so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50] == 'C') 
+    {
+        so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50] = '0';
         so_long->coin_count--;
     }
 
-    // Check if the game is over (all coins collected and player at the exit)
-    if ( so_long->coin_count ==0 && so_long->map[so_long->position[Y] / 250][so_long->position[X] / 250] == 'E') {
+
+    if ( so_long->coin_count ==0 && so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50] == 'E') 
+    {
         printf("Congratulations! You collected all the coins and reached the exit!\n");
         exit(0);
     }
@@ -194,8 +155,8 @@ int main(int argc, char **argv)
             else if (so_long->map[i][j] == 'C')
                 collec_count++;
             else if (so_long->map[i][j] == 'P') {
-                player_pos[X] = j * 250;
-                player_pos[Y] = i * 250;
+                player_pos[X] = j * 50;
+                player_pos[Y] = i * 50;
                 start_count++;
             }
             j++;
@@ -240,7 +201,7 @@ int main(int argc, char **argv)
     int high = 50;
     int width = 50;
     so_long->mlx = mlx_init();
-    so_long->win = mlx_new_window(so_long->mlx, ft_strlen(so_long->map[0]) * 250, (cnt-1) * 250, "tangawi w rassi 3ali so_long");
+    so_long->win = mlx_new_window(so_long->mlx, ft_strlen(so_long->map[0]) * 50, (cnt-1) * 50, "tangawi w rassi 3ali so_long");
     so_long->wll = mlx_xpm_file_to_image(so_long->mlx, "textures/wall.xpm", &high, &width);
     so_long->door = mlx_xpm_file_to_image(so_long->mlx, "textures/door.xpm", &high, &width);
     so_long->player = mlx_xpm_file_to_image(so_long->mlx, "textures/player.xpm", &high, &width);
@@ -251,9 +212,9 @@ int main(int argc, char **argv)
     so_long->position[X] = player_pos[X];
     so_long->position[Y] = player_pos[Y];
 
-    printf("ok\n");
+    mlx_hook(so_long->win, 17, 0, close_win, so_long);
     mlx_hook(so_long->win, ON_KEYDOWN, 1 << 0, hook, so_long);
-    mlx_loop_hook(so_long->mlx,update,so_long);
+    mlx_loop_hook(so_long->mlx, update,so_long);
     mlx_loop(so_long->mlx);
     // free(so_long->map);
     // free(so_long);
