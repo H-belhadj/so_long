@@ -6,7 +6,7 @@
 /*   By: hbelhadj <hbelhadj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 20:10:04 by hbelhadj          #+#    #+#             */
-/*   Updated: 2023/06/08 18:48:04 by hbelhadj         ###   ########.fr       */
+/*   Updated: 2023/06/09 17:21:28 by hbelhadj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,11 @@
 #include "get_next_line.h"
 #include <mlx.h>
 
-typedef struct  s_list{
-    int position[2];  // Player position [X, Y]
-    char **map;  // Map data
-    int moves; // how many times the player moved
-    void    *wll;
-    void    *backgound;
-    void    *door; 
-    void    *player;
-    void    *coins;
-    void *win;
-    void *mlx;
-    int coin_count; // Number of coins remaining
-} t_list;
-
 char            *ft_strdup(char *s);
 char            *ft_substr(char  *s, unsigned int start, int len);
 int             ft_count_world(char *s, char c);
 char	        **ft_split(char *s, char c);
+
 
 enum {
 	ON_KEYDOWN = 2,

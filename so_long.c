@@ -1,10 +1,87 @@
 #include "so_long.h"
 
+typedef struct  s_list{
+    int     position[2];  // Player position [X, Y]
+    char    **map;  // Map data
+    char    **fake_map; //Fake maps ............0
+    int     moves; // how many times the player moved
+    void    *wll;
+    void    *backgound;
+    void    *door; 
+    void    *player;
+    void    *coins;
+    void    *win;
+    void    *mlx;
+    int     coin_count; // Number of coins remaining
+    int     plyer_x;
+    int     plyer_y;
+} t_list;
 
-int close_win(t_list *so_long)
+void search_player(t_list *so_long)
 {
-    mlx_destroy_window(so_long->mlx, so_long->win);
-        exit(0);
+    int i;
+    int j;
+
+    i = -1;
+    while(so_long->map[++i])
+    {
+        j = -1;
+        while(so_long->map[i][++j])
+        {
+            if (so_long->map[i][j] == 'P')
+            {
+                so_long->plyer_x = j;
+                so_long->plyer_y = i;
+                return ;
+            }
+        }
+    }
+}
+
+int check_existance(char **fake_map)
+{
+    int i;
+    int j;
+
+    i = -1;
+    while(fake_map[++i])
+    {
+        j = -1;
+        while(fake_map[i][++j])
+        {
+            if(fake_map[i][j] == 'E')
+                return (1);
+            else if(fake_map[i][j] == 'C')
+                return (1);
+            else if(fake_map[i][j] == 'P')
+                return (1);
+        }
+    }
+    return (0);
+}
+
+void back_track(t_list *so_long, int x, int y)
+{
+    if(so_long->fake_map[x][y + 1] != '1' && so_long->fake_map[x][y + 1] != 'x')
+    {
+        so_long->fake_map[x][y + 1] = 'x';
+        back_track(so_long, x, y + 1);
+    }
+    if (so_long->fake_map[x - 1][y] != '1' && so_long->fake_map[x - 1][y] != 'x')
+    {
+        so_long->fake_map[x - 1][y] = 'x';
+        back_track(so_long, x - 1, y);
+    }
+    if (so_long->fake_map[x][y - 1] != '1' && so_long->fake_map[x][y - 1] != 'x')
+    {
+        so_long->fake_map[x][y - 1] = 'x';
+        back_track(so_long, x, y - 1);
+    }
+    if (so_long->fake_map[x + 1][y] != '1' && so_long->fake_map[x + 1][y] != 'x')
+    {
+        so_long->fake_map[x + 1][y] = 'x';
+        back_track(so_long, x + 1, y);
+    }
 }
 
 int update(t_list *so_long)
@@ -13,11 +90,9 @@ int update(t_list *so_long)
     int j;
 
     i = -1;
-    while (so_long->map[++i]) 
-    {
+    while (so_long->map[++i]) {
         j = -1;
-        while (so_long->map[i][++j]) 
-        {
+        while (so_long->map[i][++j]) {
             if (so_long->map[i][j] == '0')
                 mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->backgound, j * 50, i * 50);
             if (so_long->map[i][j] == '1')
@@ -28,12 +103,15 @@ int update(t_list *so_long)
             {
                 mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->backgound, j * 50, i * 50);
                 mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->door, j * 50, i * 50);
+
             }
             if (so_long->map[i][j] == 'P')
                 mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->backgound, j * 50, i * 50);
         }
-        mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->player, so_long->position[X] , so_long->position[Y] );
     }
+    mlx_put_image_to_window(so_long->mlx, so_long->win, so_long->player, so_long->position[X] , so_long->position[Y] );
+    if ( so_long->coin_count == 0 && so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50] == 'E') 
+        exit(0);
     return (0);
 }
 
@@ -41,7 +119,7 @@ int hook(int keycode, t_list *so_long)
 {
     if (keycode == 53)
         exit(0);
-    if (keycode == 124)
+    if (keycode == 124) // Right arrow key
     {
         if (so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50 + 1] != '1') 
         {
@@ -49,24 +127,23 @@ int hook(int keycode, t_list *so_long)
             so_long->moves++;
         }
     }
-    if (keycode == 123)
+    if (keycode == 123) // Left arrow key
     {
-        if (so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50 - 1] != '1') 
-        {
+        if (so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50 - 1] != '1')
+         {
             so_long->position[X] -= 50;
             so_long->moves++;
         }
     }
-    if (keycode == 125)
+    if (keycode == 125) // Down arrow key
     {
-        if (so_long->map[so_long->position[Y] / 50 + 1][so_long->position[X] / 50] != '1')
-         {
-
+        if (so_long->map[so_long->position[Y] / 50 + 1][so_long->position[X] / 50] != '1') 
+        {
             so_long->position[Y] += 50;
             so_long->moves++;
         }
     }
-    if (keycode == 126)
+    if (keycode == 126) // Up arrow key
     {
         if (so_long->map[so_long->position[Y] / 50 - 1][so_long->position[X] / 50] != '1') 
         {
@@ -75,20 +152,22 @@ int hook(int keycode, t_list *so_long)
         }
     }
 
-    if (so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50] == 'C') 
+    // Check if the player collected a coin
+    if (so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50] == 'C')
     {
         so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50] = '0';
         so_long->coin_count--;
     }
 
-
+    // Check if the game is over (all coins collected and player at the exit)
     if ( so_long->coin_count ==0 && so_long->map[so_long->position[Y] / 50][so_long->position[X] / 50] == 'E') 
     {
         printf("Congratulations! You collected all the coins and reached the exit!\n");
         exit(0);
     }
+    printf("movement: %d\n", so_long->moves);
 
-    return 1;
+    return (1);
 }
 
 
@@ -134,6 +213,16 @@ int main(int argc, char **argv)
     }
     close(fd);
     so_long->map = ft_split(total, '\n');
+    so_long->fake_map = ft_split(total, '\n');
+    search_player(so_long);
+
+    back_track(so_long, so_long->plyer_x, so_long->plyer_y);
+   
+    if (check_existance(so_long->fake_map) == 1)
+    {
+        printf ("Error\n invalid path");
+        return (1);
+    }
     so_long->moves = 0;
 
     i = 0;
@@ -212,9 +301,9 @@ int main(int argc, char **argv)
     so_long->position[X] = player_pos[X];
     so_long->position[Y] = player_pos[Y];
 
-    mlx_hook(so_long->win, 17, 0, close_win, so_long);
+    printf("ok\n");
     mlx_hook(so_long->win, ON_KEYDOWN, 1 << 0, hook, so_long);
-    mlx_loop_hook(so_long->mlx, update,so_long);
+    mlx_loop_hook(so_long->mlx,update,so_long);
     mlx_loop(so_long->mlx);
     // free(so_long->map);
     // free(so_long);
