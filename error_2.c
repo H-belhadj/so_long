@@ -6,7 +6,7 @@
 /*   By: hbelhadj <hbelhadj@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 12:26:38 by hbelhadj          #+#    #+#             */
-/*   Updated: 2023/09/14 15:21:00 by hbelhadj         ###   ########.fr       */
+/*   Updated: 2023/09/14 19:27:41 by hbelhadj         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,29 +64,29 @@ int	check_existance(char **fake_map)
 
 void	back_track(t_list *so_long, int x, int y)
 {
-	if (so_long->fake_map[x][y + 1] && so_long->fake_map[x]
-			[y + 1] != '\n' && so_long->fake_map[x][y + 1] != '1'
-	&& so_long->fake_map[x][y + 1] != 'x')
+	if (so_long->fake_map[y + 1][x] && so_long->fake_map
+			[y + 1][x] != '\n' && so_long->fake_map[y + 1][x] != '1'
+		&& so_long->fake_map[y + 1][x] != 'x')
 	{
-		so_long->fake_map[x][y + 1] = 'x';
+		so_long->fake_map[y + 1][x] = 'x';
 		back_track(so_long, x, y + 1);
 	}
-	if (x - 1 >= 0 && so_long->fake_map[x - 1][y] != '1'
-	&& so_long->fake_map[x - 1][y] != 'x')
+	if (x - 1 >= 0 && so_long->fake_map[y][x - 1] != '1'
+		&& so_long->fake_map[y][x - 1] != 'x')
 	{
-		so_long->fake_map[x - 1][y] = 'x';
+		so_long->fake_map[y][x - 1] = 'x';
 		back_track(so_long, x - 1, y);
 	}
-	if (y - 1 >= 0 && so_long->fake_map[x][y - 1] != '1'
-	&& so_long->fake_map[x][y - 1] != 'x')
+	if (y - 1 >= 0 && so_long->fake_map[y - 1][x] != '1'
+		&& so_long->fake_map[y - 1][x] != 'x')
 	{
-		so_long->fake_map[x][y - 1] = 'x';
+		so_long->fake_map[y - 1][x] = 'x';
 		back_track(so_long, x, y - 1);
 	}
-	if (so_long->fake_map[x + 1] && so_long->fake_map[x + 1][y] != '1'
-	&& so_long->fake_map[x + 1][y] != 'x')
+	if (so_long->fake_map[y][x + 1] && so_long->fake_map[y][x + 1] != '1'
+		&& so_long->fake_map[y][x + 1] != 'x')
 	{
-		so_long->fake_map[x + 1][y] = 'x';
+		so_long->fake_map[y][x + 1] = 'x';
 		back_track(so_long, x + 1, y);
 	}
 }

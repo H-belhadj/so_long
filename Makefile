@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -Wextra -Werror  -g
+CFLAGS = -Wall -Wextra -Werror  -fsanitize=address -g
 NAME = so_long
 SOURCES = get_next_line.c get_next_line_utils.c so_long.c so_long_utils.c update.c hook.c moves.c error_1.c error_2.c error_3.c utils_more.c
 OBJECTS = $(SOURCES:.c=.o)
